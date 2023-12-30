@@ -1,5 +1,4 @@
-# Reducer
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys
 
 current_page = None

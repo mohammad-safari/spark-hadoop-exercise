@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import sys
 
 data = [tuple(line.strip().split("\t")) for line in sys.stdin]

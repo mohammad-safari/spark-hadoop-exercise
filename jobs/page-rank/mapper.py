@@ -1,5 +1,4 @@
-# Mapper
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys
 
 DAMPING_FACTOR = 0.85
