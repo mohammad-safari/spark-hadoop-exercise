@@ -4,38 +4,73 @@ import sys
 # Initialize distance as infinity
 INF = float("inf")
 
-for line in sys.stdin:
-    # Parse CSV input
+def parse_input(line):
     parts = line.strip().split("\t")
     node = parts[0]
     distance = parts[1]
-    # Set neighbours variable only if the node has some
+    # Set neighbours variable non zero if the node has any
     neighbours = parts[2] if len(parts) > 2 and parts[2] != "0" else 0
     # Propagate computed path at previous step, or set beginning of path
     path = parts[3] if len(parts) == 4 else node
+    return node, distance, neighbours, path
 
-    try:
-        distance = int(distance)
-    except ValueError:
-        continue
 
-    # Emit the node and its current distance to keep the graph structure for future iterations
-    print(f"{node}\t{distance}\t{neighbours}\t{path}")
+def emit_node_info_and_graph_path(node, distance, neighbors, path):
+    if neighbors is not None:
+        print(f"{node}\t{distance}\t{neighbors}\t{path}")
+    else:
+        print(f"{node}\t{distance}\t{path}")
 
-    # If the any other node is reachable, emit distances to neighbors
-    if neighbours:
-        neighbours = neighbours.strip().split(",")
 
-        # For each neighbor, print its updated distance to the source node
-        for neighbour in neighbours:
-            neighbor_node, neighbor_distance = neighbour.strip().split(":", 1)
+if __name__ == "__main__":
+    for line in sys.stdin:
+        (
+            current_node,
+            current_distance,
+            reachable_neighbours,
+            current_path,
+        ) = parse_input(line)
 
-            try:
-                neighbor_distance = int(neighbor_distance)
-            except ValueError:
-                continue
+        try:
+            current_distance = int(current_distance)
+        except ValueError:
+            continue
 
-            neighbor_distance += distance
-            neighbor_path = "{}>{}".format(path, str(neighbor_node))
+        emit_node_info_and_graph_path(
+            current_node, current_distance, reachable_neighbours, current_path
+        )
 
-            print(f"{neighbor_node}\t{neighbor_distance}\t{neighbor_path}")
+        # If the any other node is reachable, emit distances to neighbors
+        propagating_neighbors = [
+            neighbour.strip().split(":", 1)
+            for neighbour in (
+                reachable_neighbours.strip().split(",") if reachable_neighbours else []
+            )
+        ]
+
+        def filter_integer_distance(_, distance):
+            return isinstance(int(distance), int)
+
+        def preserve_neighbor_reach_path(neighbor_node, neighbor_distance):
+            return (
+                neighbor_node,
+                current_distance + int(neighbor_distance),
+                "{}>{}".format(current_path, str(neighbor_node)),
+            )
+
+        filtered_propagating_neighbors = list(
+            filter(lambda tuple: filter_integer_distance(*tuple), propagating_neighbors)
+        )
+        filtered_propagating_neighbors_with_path = map(
+            lambda tuple: preserve_neighbor_reach_path(*tuple),
+            filtered_propagating_neighbors,
+        )
+
+        for (
+            neighbor_node,
+            neighbor_distance,
+            neighbor_path,
+        ) in filtered_propagating_neighbors_with_path:
+            emit_node_info_and_graph_path(
+                neighbor_node, neighbor_distance, None, neighbor_path
+            )
