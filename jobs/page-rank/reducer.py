@@ -7,7 +7,7 @@ current_page_rank = 0.0
 current_adjacency_list = {}
 
 DAMPING_FACTOR = os.getenv("DAMPING_FACTOR", 0.85)
-TOTAL_NODES = os.getenv("TOTAL_NODES", 5)
+TOTAL_NODES = os.getenv("TOTAL_NODES", 3)
 
 
 def parse_input(line):

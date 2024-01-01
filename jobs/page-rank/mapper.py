@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 import sys
+import os
+
+TOTAL_NODES = os.getenv("TOTAL_NODES", 3)
+DAMPING_FACTOR = os.getenv("DAMPING_FACTOR", 0.85)
 
 def parse_input(line):
     parts = line.strip().split("\t")
@@ -23,7 +27,7 @@ for line in sys.stdin:
 
     # emit the original structure
     current_adjacency_list = current_adjacency_list.split(",")
-    emit_rank(current_page, current_page_rank, current_adjacency_list)
+    emit_rank(current_page, DAMPING_FACTOR/TOTAL_NODES, current_adjacency_list)
 
     # distribute this page effect to page rank neigbors neighbors
     propagating_page_rank_effect = current_page_rank / len(current_adjacency_list)
