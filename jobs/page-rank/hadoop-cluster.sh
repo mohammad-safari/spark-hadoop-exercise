@@ -15,7 +15,7 @@ docker exec -it namenode hadoop fs -rm -r $input_dir $output_dir
 docker exec -it namenode hadoop fs -mkdir $input_dir
 docker exec -it namenode sh -c 'hadoop fs -put /hadoop-data/input/*.txt '$input_dir
 
-docker exec -it namenode sh -c 'hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar \
+docker exec -e TOTAL_NODES=68100 -e DAMPING_FACTOR=0.85 -it namenode sh -c 'hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar \
 -file mapper.py -mapper mapper.py \
 -file reducer.py -reducer reducer.py \
 -input '$input_dir'/'$input' -output '$output_dir

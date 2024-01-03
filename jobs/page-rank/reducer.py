@@ -1,14 +1,9 @@
 #!/usr/bin/env python3
 import sys
-import os
 
 current_page = None
 current_page_rank = 0.0
 current_adjacency_list = {}
-
-DAMPING_FACTOR = os.getenv("DAMPING_FACTOR", 0.85)
-TOTAL_NODES = os.getenv("TOTAL_NODES", 3)
-
 
 def parse_input(line):
     parts = line.strip().split("\t")
@@ -22,10 +17,10 @@ def parse_input(line):
 
 def calculate_and_emit_rank(current_page, current_page_rank, adjacency_list):
     if current_page is not None:
-        new_page_rank = (
-            DAMPING_FACTOR / TOTAL_NODES + (1 - DAMPING_FACTOR) * current_page_rank
-        )
-        print(f"{current_page}\t{new_page_rank}\t{adjacency_list}")
+        if adjacency_list:
+            print(f"{current_page}\t{current_page_rank}\t{adjacency_list}")
+        else:
+            print(f"{current_page}\t{current_page_rank}")
 
 
 for line in sys.stdin:
